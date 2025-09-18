@@ -25,10 +25,11 @@ df.columns = (
 print("\nAvailable columns:", list(df.columns))
 
 # -------------------------------------------------------------------------
-# Step 2: Resolve columns we need
+# Step 2: Resolve columns we need (including NSE code)
 # -------------------------------------------------------------------------
 COLUMN_ALIASES = {
     "company": ["company", "name", "company_name"],
+    "nse_code": ["nse_code", "symbol", "ticker", "nse_symbol"],
     "industry": ["industry", "sector"],
     "current_price": ["current_price", "price", "cmp", "market_price"],
     "pe": ["pe", "p/e", "price_to_earning", "price_to_earnings"],
@@ -52,6 +53,7 @@ def resolve_column(alias_list):
 
 # Resolve columns
 col_company = resolve_column(COLUMN_ALIASES["company"])
+col_nse_code = resolve_column(COLUMN_ALIASES["nse_code"])
 col_industry = resolve_column(COLUMN_ALIASES["industry"])
 col_price = resolve_column(COLUMN_ALIASES["current_price"])
 col_pe = resolve_column(COLUMN_ALIASES["pe"])
@@ -69,6 +71,7 @@ col_profit_growth = resolve_column(COLUMN_ALIASES["profit_growth"])
 # Debug: print resolved columns
 print("\nResolved Columns:")
 print("Company:", col_company)
+print("NSE Code:", col_nse_code)
 print("Industry:", col_industry)
 print("Current Price:", col_price)
 print("P/E:", col_pe)
@@ -116,7 +119,7 @@ if not filtered_df.empty:
     filtered_df["date"] = today
 
     display_cols = [
-        col_company, col_industry, col_price,
+        col_company, col_nse_code, col_industry, col_price,
         col_pe, col_peg, col_roe, col_roce, col_eps,
         col_current_ratio, col_quick_ratio,
         col_interest_coverage, col_debt_to_equity,
@@ -132,7 +135,7 @@ if not filtered_df.empty:
     display_cols = [c for c in display_cols if c]
 
     print("\nFiltered Companies:")
-    print("-" * 120)
+    print("-" * 140)
     print(filtered_df[display_cols].to_string(index=False))
 
     filtered_df[display_cols].to_excel("level5stocks.xlsx", index=False)
