@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 
 print("=" * 60)
-print("LEVEL 7 STOCK SCREENER - FUNDAMENTAL FILTERS")
+print("LEVEL 8 STOCK SCREENER - FUNDAMENTAL FILTERS + INTRINSIC VALUE")
 print("=" * 60)
 
 # -------------------------------------------------------------------------
@@ -29,6 +29,7 @@ print("\nAvailable columns:", list(df.columns))
 # -------------------------------------------------------------------------
 COLUMN_ALIASES = {
     "company": ["company", "name", "company_name"],
+    "nse_code": ["nse_code", "symbol", "ticker", "code"],
     "industry": ["industry", "sector"],
     "current_price": ["current_price", "price", "cmp", "market_price"],
     "pe": ["pe", "p/e", "price_to_earning", "price_to_earnings"],
@@ -46,7 +47,6 @@ COLUMN_ALIASES = {
     "fcf": ["free_cash_flow", "free_cash_flow_last_year", "fcf"],
     "promoter_holding": ["promoter_holding", "promoter_shareholding"],
     "promoter_change": ["change_in_promoter_holding_3y", "promoter_holding_change_3y"],
-    # Add FII/DII aliases, though not present in your Excel
     "fii_change": ["change_in_fii_holding_3y", "fii_holding_change_3y", "fii", "fii_holding"],
     "dii_change": ["change_in_dii_holding_3y", "dii_holding_change_3y", "dii", "dii_holding"],
 }
@@ -59,6 +59,7 @@ def resolve_column(alias_list):
 
 # Resolve columns
 col_company = resolve_column(COLUMN_ALIASES["company"])
+col_nse = resolve_column(COLUMN_ALIASES["nse_code"])
 col_industry = resolve_column(COLUMN_ALIASES["industry"])
 col_price = resolve_column(COLUMN_ALIASES["current_price"])
 col_pe = resolve_column(COLUMN_ALIASES["pe"])
@@ -82,6 +83,7 @@ col_dii_change = resolve_column(COLUMN_ALIASES["dii_change"])
 # Debug: print resolved columns
 print("\nResolved Columns:")
 print("Company:", col_company)
+print("NSE Code:", col_nse)
 print("Industry:", col_industry)
 print("Current Price:", col_price)
 print("P/E:", col_pe)
@@ -105,7 +107,7 @@ print("DII Holding Change 3Y:", col_dii_change)
 # -------------------------------------------------------------------------
 # Step 3: Apply Screening Conditions
 # -------------------------------------------------------------------------
-print("\nStep 2: Filtering with Level 7 conditions...")
+print("\nStep 2: Filtering with Level 8 conditions...")
 
 criteria = []
 if col_peg: criteria.append(df[col_peg] < 1.2)
@@ -158,7 +160,7 @@ if not filtered_df.empty:
     filtered_df["date"] = today
 
     display_cols = [
-        col_company, col_industry, col_price,
+        col_company, col_nse, col_industry, col_price,
         col_pe, col_peg, col_roe, col_roce, col_eps,
         col_current_ratio, col_quick_ratio,
         col_interest_coverage, col_debt_to_equity,
@@ -175,7 +177,7 @@ if not filtered_df.empty:
     display_cols = [c for c in display_cols if c]
 
     print("\nFiltered Companies:")
-    print("-" * 150)
+    print("-" * 160)
     print(filtered_df[display_cols].to_string(index=False))
 
     filtered_df[display_cols].to_excel("level8stocks.xlsx", index=False)
