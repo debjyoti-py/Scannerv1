@@ -1,7 +1,11 @@
 import pandas as pd
 
-# Read CSV file
-df = pd.read_csv('nifty-500 (5).csv')
+# Read the CSV file
+csv_file = 'nifty-500.csv'
+df = pd.read_csv(csv_file)
 
 # Write to Excel file
-df.to_excel('NIFTY500masterlist.xlsx', index=False)
+excel_file = 'NIFTY500masterlist.xlsx'
+df.to_excel(excel_file, index=False)
+
+print(f"Conversion complete. File saved as {excel_file}")
