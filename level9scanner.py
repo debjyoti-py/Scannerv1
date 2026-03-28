@@ -50,7 +50,10 @@ COLUMN_ALIASES = {
     "fii_change": ["change_in_fii_holding_3y", "fii_holding_change_3y", "fii", "fii_holding"],
     "dii_change": ["change_in_dii_holding_3y", "dii_holding_change_3y", "dii", "dii_holding"],
     "pbv": ["p/bv", "pb", "price_to_book", "price_to_book_value"],
-    "market_cap": ["market_cap", "market_capitalization", "mcap"]
+    "market_cap": ["market_cap", "market_capitalization", "mcap"],
+    "avg_roe_10y": ["average_return_on_equity_10years", "avg_roe_10y", "avg_roe_10years"],
+    "sales_growth_10y": ["sales_growth_10years", "sales_growth_10y"],
+    "profit_growth_10y": ["profit_growth_10years", "profit_growth_10y"]
 }
 
 def resolve_column(alias_list):
@@ -83,6 +86,9 @@ col_fii_change = resolve_column(COLUMN_ALIASES["fii_change"])
 col_dii_change = resolve_column(COLUMN_ALIASES["dii_change"])
 col_pbv = resolve_column(COLUMN_ALIASES["pbv"])
 col_market_cap = resolve_column(COLUMN_ALIASES["market_cap"])
+col_avg_roe_10y = resolve_column(COLUMN_ALIASES["avg_roe_10y"])
+col_sales_growth_10y = resolve_column(COLUMN_ALIASES["sales_growth_10y"])
+col_profit_growth_10y = resolve_column(COLUMN_ALIASES["profit_growth_10y"])
 
 # Debug: print resolved columns
 print("\nResolved Columns:")
@@ -109,6 +115,9 @@ print("FII Holding Change 3Y:", col_fii_change)
 print("DII Holding Change 3Y:", col_dii_change)
 print("Price/Book Value:", col_pbv)
 print("Market Cap:", col_market_cap)
+print("Avg ROE 10Y:", col_avg_roe_10y)
+print("Sales Growth 10Y:", col_sales_growth_10y)
+print("Profit Growth 10Y:", col_profit_growth_10y)
 
 # -------------------------------------------------------------------------
 # Step 3: Apply Screening Conditions
@@ -133,9 +142,9 @@ if col_promoter_holding: criteria.append(df[col_promoter_holding] > 50)
 if col_promoter_change: criteria.append(df[col_promoter_change] < 3)
 if col_fii_change: criteria.append(df[col_fii_change] > 1)
 if col_dii_change: criteria.append(df[col_dii_change] > 1)
-if col_pbv: criteria.append(df[col_pbv] < 2.5)
-if col_market_cap and col_cfo:
-    criteria.append(df[col_market_cap] > 32.5 * df[col_cfo])
+if col_avg_roe_10y: criteria.append(df[col_avg_roe_10y] > 15)
+if col_sales_growth_10y: criteria.append(df[col_sales_growth_10y] > 15)
+if col_profit_growth_10y: criteria.append(df[col_profit_growth_10y] > 20)
 
 if criteria:
     filtered_df = df.loc[pd.concat(criteria, axis=1).all(axis=1)]
@@ -175,7 +184,7 @@ if not filtered_df.empty:
         col_interest_coverage, col_debt_to_equity,
         col_opm, col_profit_growth, col_cfo, col_fcf,
         col_promoter_holding, col_promoter_change, col_fii_change, col_dii_change,
-        col_pbv, col_market_cap,
+        col_pbv, col_market_cap, col_avg_roe_10y, col_sales_growth_10y, col_profit_growth_10y,
         "intrinsic_value", "date"
     ]
 
